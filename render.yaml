@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: crypto-signal-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: node src/server.js
+    envVars:
+      - key: PORT
+        value: 3100
+    plan: free
