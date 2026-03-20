@@ -1,0 +1,261 @@
+openapi: 3.0.3
+info:
+  title: Crypto Signal API
+  description: |
+    Real-time cryptocurrency trading signals powered by technical analysis.
+    Analyzes 6 indicators (RSI, MACD, EMA, Bollinger Bands, Stochastic RSI, Volume)
+    from Binance live market data to produce actionable BUY/SELL/HOLD signals.
+
+    **No API key required** — uses Binance public data.
+
+    Features:
+    - Combined trading signal with confidence score
+    - Detailed technical indicators breakdown
+    - Raw OHLCV candle data
+    - Market screener: scan top coins by volume
+  version: 1.0.0
+  contact:
+    name: lazymac2x
+    url: https://github.com/lazymac2x/crypto-signal-api
+servers:
+  - url: https://crypto-signal-api.up.railway.app
+    description: Production
+paths:
+  /api/v1/signal/{symbol}:
+    get:
+      operationId: getSignal
+      summary: Get trading signal for a crypto pair
+      description: Returns a combined BUY/SELL/HOLD signal with full indicator breakdown and confidence score.
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            default: BTCUSDT
+          description: Trading pair (e.g. BTCUSDT, ETHUSDT, SOLUSDT)
+        - name: interval
+          in: query
+          schema:
+            type: string
+            enum: [1m, 5m, 15m, 1h, 4h, 1d]
+            default: 1h
+          description: Candle interval
+      responses:
+        '200':
+          description: Signal with indicators
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalResponse'
+        '400':
+          description: Invalid symbol or API error
+  /api/v1/indicators/{symbol}:
+    get:
+      operationId: getIndicators
+      summary: Get technical indicators
+      description: Returns detailed technical indicators (RSI, MACD, EMA, BB, StochRSI, ATR, Volume) without signal.
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            default: BTCUSDT
+        - name: interval
+          in: query
+          schema:
+            type: string
+            default: 1h
+      responses:
+        '200':
+          description: Technical indicators
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndicatorResponse'
+  /api/v1/candles/{symbol}:
+    get:
+      operationId: getCandles
+      summary: Get OHLCV candle data
+      description: Returns raw candle data from Binance.
+      parameters:
+        - name: symbol
+          in: path
+          required: true
+          schema:
+            type: string
+            default: BTCUSDT
+        - name: interval
+          in: query
+          schema:
+            type: string
+            default: 1h
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            maximum: 500
+      responses:
+        '200':
+          description: Candle data array
+  /api/v1/screener:
+    get:
+      operationId: screenMarket
+      summary: Scan top coins with signals
+      description: Scans top cryptocurrencies by 24h volume and returns trading signals for each.
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+            maximum: 50
+          description: Number of top coins to scan
+        - name: interval
+          in: query
+          schema:
+            type: string
+            default: 1h
+      responses:
+        '200':
+          description: Screener results sorted by signal score
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScreenerResponse'
+components:
+  schemas:
+    SignalResponse:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: BTCUSDT
+        interval:
+          type: string
+          example: 1h
+        timestamp:
+          type: integer
+        signal:
+          type: object
+          properties:
+            action:
+              type: string
+              enum: [STRONG_BUY, BUY, HOLD, SELL, STRONG_SELL]
+            strength:
+              type: string
+              enum: [strong, moderate, weak]
+            confidence:
+              type: integer
+              minimum: 0
+              maximum: 100
+            score:
+              type: integer
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  score:
+                    type: integer
+                  reason:
+                    type: string
+        indicators:
+          $ref: '#/components/schemas/Indicators'
+    IndicatorResponse:
+      type: object
+      properties:
+        symbol:
+          type: string
+        interval:
+          type: string
+        timestamp:
+          type: integer
+        indicators:
+          $ref: '#/components/schemas/Indicators'
+    Indicators:
+      type: object
+      properties:
+        price:
+          type: number
+        rsi:
+          type: number
+        macd:
+          type: object
+          properties:
+            MACD:
+              type: number
+            signal:
+              type: number
+            histogram:
+              type: number
+        ema:
+          type: object
+          properties:
+            ema9:
+              type: number
+            ema21:
+              type: number
+            ema50:
+              type: number
+        bollingerBands:
+          type: object
+          properties:
+            upper:
+              type: number
+            middle:
+              type: number
+            lower:
+              type: number
+        stochRsi:
+          type: object
+          properties:
+            k:
+              type: number
+            d:
+              type: number
+        atr:
+          type: number
+        volume:
+          type: object
+          properties:
+            current:
+              type: number
+            average:
+              type: number
+            ratio:
+              type: number
+    ScreenerResponse:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+        interval:
+          type: string
+        count:
+          type: integer
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              symbol:
+                type: string
+              price:
+                type: number
+              change24h:
+                type: number
+              volume24h:
+                type: number
+              signal:
+                type: string
+              strength:
+                type: string
+              confidence:
+                type: integer
+              score:
+                type: integer
