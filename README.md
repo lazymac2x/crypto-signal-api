@@ -1,3 +1,5 @@
+[![lazymac API Store](https://img.shields.io/badge/lazymac-API%20Store-blue?style=flat-square)](https://lazymac2x.github.io/lazymac-api-store/) [![Gumroad](https://img.shields.io/badge/Buy%20on-Gumroad-ff69b4?style=flat-square)](https://coindany.gumroad.com/) [![MCPize](https://img.shields.io/badge/MCP-MCPize-green?style=flat-square)](https://mcpize.com/mcp/crypto-signal-api)
+
 # crypto-signal-api
 
 Real-time cryptocurrency trading signals powered by technical analysis. Fetches live data from Binance and computes RSI, MACD, EMA, Bollinger Bands, Stochastic RSI, ATR, and volume analysis to generate actionable BUY/SELL/HOLD signals.
