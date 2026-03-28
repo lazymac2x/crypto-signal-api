@@ -2,6 +2,6 @@ services:
   - type: web
     name: crypto-signal-api
     runtime: node
-    buildCommand: npm install
+    buildCommand: npm install --no-audit
     startCommand: node src/server.js
     plan: free
