@@ -1,0 +1,6 @@
+name: crypto-signal-api
+description: Real-time crypto trading signals with 6 technical indicators. BUY/SELL/HOLD with confidence scores from Binance live data.
+version: 1
+runtime: typescript
+entry: src/server.js
+mcpPath: /mcp
