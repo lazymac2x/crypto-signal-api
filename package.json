@@ -1,5 +1,5 @@
 {
-  "name": "crypto-signal-api",
+  "name": "@lazymac/crypto-signal-api",
   "version": "1.0.0",
   "description": "Real-time crypto technical analysis signals API - RSI, MACD, EMA, Bollinger Bands, and actionable buy/sell signals",
   "main": "src/server.js",
@@ -8,7 +8,15 @@
     "dev": "node --watch src/server.js",
     "mcp": "node src/mcp-server.js"
   },
-  "keywords": ["crypto", "trading", "signals", "technical-analysis", "api", "binance", "bitcoin"],
+  "keywords": [
+    "crypto",
+    "trading",
+    "signals",
+    "technical-analysis",
+    "api",
+    "binance",
+    "bitcoin"
+  ],
   "author": "lazymac2x",
   "license": "MIT",
   "dependencies": {
